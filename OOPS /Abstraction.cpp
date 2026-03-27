@@ -1,9 +1,9 @@
 #include <iostream>
 using namespace std;
 
-class SportsCar
+class Car
 {
-private:
+protected:
     string brand;
     string model;
     bool isEngineOne;
@@ -12,7 +12,23 @@ private:
     string color;
 
 public:
-    SportsCar(string b, string m) : brand(b), model(m), isEngineOne(false), currentSpeed(0), currentGear(0), color("blue") {}
+    Car(string b, string m) : brand(b), model(m), isEngineOne(false), currentSpeed(0), currentGear(0), color("blue") {}
+
+    virtual void changeCarColor(string c) = 0;
+    virtual string getCarColor() = 0;
+    virtual void startEngine() = 0;
+    virtual void shiftGear() = 0;
+    virtual void accelerate() = 0;
+    virtual void brake() = 0;
+    virtual void stopEngine() = 0;
+    virtual ~Car() {}
+};
+
+class SportsCar : public Car
+{
+
+public:
+    SportsCar(string b, string m) : Car(b, m) {}
 
     void changeCarColor(string c) // setter method
     {
@@ -93,14 +109,12 @@ public:
         isEngineOne = false;
         cout << brand << " " << model << " : " << "Engine turned off" << endl;
     }
-
-    ~SportsCar() {}
 };
 
 int main()
 {
 
-    SportsCar *car = new SportsCar("BMW", "M5");
+    Car *car = new SportsCar("BMW", "M5");
 
     car->startEngine();
     car->shiftGear();
@@ -114,6 +128,8 @@ int main()
     cout << "Color is " << car->getCarColor() << endl;
     car->changeCarColor("red");
     cout << "Color is " << car->getCarColor() << endl;
+
+    delete car;
 
     return 0;
 }
