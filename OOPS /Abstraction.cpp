@@ -28,7 +28,11 @@ class SportsCar : public Car
 {
 
 public:
-    SportsCar(string b, string m) : Car(b, m) {}
+    // SportsCar(string b, string m) : Car(b, m) {}
+    SportsCar(string b, string m) : Car(b, m)
+    {
+        // we can init current class data var or characters
+    }
 
     void changeCarColor(string c) // setter method
     {
