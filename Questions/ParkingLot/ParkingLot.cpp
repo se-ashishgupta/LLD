@@ -19,6 +19,12 @@ protected:
     VehicleType vehicleType;
 
 public:
+    Vehicle(string vehicleNumber, VehicleType vehicleType)
+    {
+        this->vehicleNumber = vehicleNumber;
+        this->vehicleType = vehicleType;
+    }
+
     string getVehicleNumber()
     {
         return vehicleNumber;
@@ -35,9 +41,13 @@ class ParkingSpot
 {
 private:
     string spotId;
-    bool free;
+    bool free = true;
 
 public:
+    ParkingSpot(string spotId)
+    {
+        this->spotId = spotId;
+    }
     bool isSpotFree()
     {
         return free;
@@ -323,7 +333,7 @@ private:
     vector<ParkingLevel *> levels;
 
 public:
-    ParkingBuilding(vector<ParkingLevel *> levels)
+    ParkingBuilding(vector<ParkingLevel *> levels, CostComputation *costComputation)
     {
         this->levels = levels;
     }
@@ -343,6 +353,9 @@ public:
                 }
             }
         }
+
+        __throw_overflow_error(
+            "Paking Full");
     }
 
     void release(Ticket *ticket)
@@ -396,7 +409,74 @@ public:
     }
 };
 
+// ======================= EXIT GATE   =======================
+
+class ParkingLot
+{
+private:
+    ParkingBuilding *building;
+    EntranceGate *entranceGate;
+    ExitGate *exitGate;
+
+public:
+    ParkingLot(ParkingBuilding *building, EntranceGate *entranceGate, ExitGate *exitGate)
+    {
+        this->building = building;
+        this->entranceGate = entranceGate;
+        this->exitGate = exitGate;
+    }
+
+    Ticket *vehicalArrives(Vehicle *vehicle)
+    {
+        return entranceGate->enter(building, vehicle);
+    }
+
+    void vehicalExit(Ticket *ticket, Payment *payment)
+    {
+        exitGate->completeExit(building, ticket, payment);
+    }
+};
+
 int main()
 {
+
+    ParkingSpotLookupStrategy *strategy = new RandomSpotLookupStrategy();
+
+    // Level 1
+    map<VehicleType, ParkingSpotManager *> levelOneManager;
+
+    levelOneManager[VehicleType::TWO_WHEELER] = new TwoWheelerSpotManager({new ParkingSpot("L1-S1"), new ParkingSpot("L1-S2")}, strategy);
+    levelOneManager[VehicleType::FOUR_WHELLER] = new FourWheelerSpotManager({new ParkingSpot("L1-S3"), new ParkingSpot("L1-S4")}, strategy);
+
+    ParkingLevel *level1 = new ParkingLevel(1, levelOneManager);
+
+    // Level 2
+    map<VehicleType, ParkingSpotManager *> levelTwoManager;
+
+    levelTwoManager[VehicleType::TWO_WHEELER] = new TwoWheelerSpotManager({new ParkingSpot("L2-S1")}, strategy);
+    levelTwoManager[VehicleType::FOUR_WHELLER] = new FourWheelerSpotManager({new ParkingSpot("L2-S2"), new ParkingSpot("L2-S3")}, strategy);
+
+    ParkingLevel *level2 = new ParkingLevel(2, levelTwoManager);
+
+    // Pricing
+    PricingStrategy *pricingStrategy = new FixedPricingStrategy();
+    CostComputation *costComputation = new CostComputation(pricingStrategy);
+
+    ParkingBuilding *parkingBuilding = new ParkingBuilding({level1, level2}, costComputation);
+
+    EntranceGate *entranceGate = new EntranceGate();
+    ExitGate *exitGate = new ExitGate(costComputation);
+
+    ParkingLot *parkingLot = new ParkingLot(parkingBuilding, entranceGate, exitGate);
+
+    Vehicle *bike = new Vehicle("Bike-101", VehicleType::TWO_WHEELER);
+    Vehicle *car = new Vehicle("Car-102", VehicleType::FOUR_WHELLER);
+
+    Ticket *t1 = parkingLot->vehicalArrives(bike);
+    Ticket *t2 = parkingLot->vehicalArrives(car);
+
+    parkingLot->vehicalExit(t1, new CashPayment());
+    parkingLot->vehicalExit(t2, new UPIPayment());
+
     return 0;
 }
