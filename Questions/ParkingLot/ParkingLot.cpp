@@ -9,7 +9,7 @@ using namespace std;
 enum class VehicleType
 {
     TWO_WHEELER,
-    FOUR_WHELLER
+    FOUR_WHEELER
 };
 
 class Vehicle
@@ -135,6 +135,7 @@ public:
         if (spot == nullptr)
         {
             cout << "Not Spot Founc" << endl;
+            return;
         }
 
         spot->relaseSpot();
@@ -446,7 +447,7 @@ int main()
     map<VehicleType, ParkingSpotManager *> levelOneManager;
 
     levelOneManager[VehicleType::TWO_WHEELER] = new TwoWheelerSpotManager({new ParkingSpot("L1-S1"), new ParkingSpot("L1-S2")}, strategy);
-    levelOneManager[VehicleType::FOUR_WHELLER] = new FourWheelerSpotManager({new ParkingSpot("L1-S3"), new ParkingSpot("L1-S4")}, strategy);
+    levelOneManager[VehicleType::FOUR_WHEELER] = new FourWheelerSpotManager({new ParkingSpot("L1-S3"), new ParkingSpot("L1-S4")}, strategy);
 
     ParkingLevel *level1 = new ParkingLevel(1, levelOneManager);
 
@@ -454,7 +455,7 @@ int main()
     map<VehicleType, ParkingSpotManager *> levelTwoManager;
 
     levelTwoManager[VehicleType::TWO_WHEELER] = new TwoWheelerSpotManager({new ParkingSpot("L2-S1")}, strategy);
-    levelTwoManager[VehicleType::FOUR_WHELLER] = new FourWheelerSpotManager({new ParkingSpot("L2-S2"), new ParkingSpot("L2-S3")}, strategy);
+    levelTwoManager[VehicleType::FOUR_WHEELER] = new FourWheelerSpotManager({new ParkingSpot("L2-S2"), new ParkingSpot("L2-S3")}, strategy);
 
     ParkingLevel *level2 = new ParkingLevel(2, levelTwoManager);
 
@@ -470,7 +471,7 @@ int main()
     ParkingLot *parkingLot = new ParkingLot(parkingBuilding, entranceGate, exitGate);
 
     Vehicle *bike = new Vehicle("Bike-101", VehicleType::TWO_WHEELER);
-    Vehicle *car = new Vehicle("Car-102", VehicleType::FOUR_WHELLER);
+    Vehicle *car = new Vehicle("Car-102", VehicleType::FOUR_WHEELER);
 
     Ticket *t1 = parkingLot->vehicalArrives(bike);
     Ticket *t2 = parkingLot->vehicalArrives(car);
