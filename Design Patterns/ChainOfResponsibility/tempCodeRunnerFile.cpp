@@ -1,0 +1,1 @@
+LogProcessor *fatalLogger = new FatalLogProcessor(LogProcessor::FATAL);
