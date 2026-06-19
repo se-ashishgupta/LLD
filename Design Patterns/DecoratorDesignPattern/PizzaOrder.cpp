@@ -55,12 +55,12 @@ class ExtraCheeseTopping : public ToppingDecorator
 public:
     ExtraCheeseTopping(shared_ptr<BasePizza> base) : ToppingDecorator(base) {}
 
-    string getDescription()
+    string getDescription() override
     {
         return pizza->getDescription() + " + Extra Cheese";
     }
 
-    double getCost()
+    double getCost() override
     {
         return pizza->getCost() + 10;
     }
@@ -70,12 +70,12 @@ class VeggiesTopping : public ToppingDecorator
 {
 public:
     VeggiesTopping(shared_ptr<BasePizza> base) : ToppingDecorator(base) {}
-    string getDescription()
+    string getDescription() override
     {
         return pizza->getDescription() + " + Veggies";
     }
 
-    double getCost()
+    double getCost() override
     {
         return pizza->getCost() + 20;
     }
@@ -85,12 +85,12 @@ class MushroomTopping : public ToppingDecorator
 {
 public:
     MushroomTopping(shared_ptr<BasePizza> base) : ToppingDecorator(base) {}
-    string getDescription()
+    string getDescription() override
     {
         return pizza->getDescription() + " + Mushroom";
     }
 
-    double getCost()
+    double getCost() override
     {
         return pizza->getCost() + 50;
     }
