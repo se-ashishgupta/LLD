@@ -112,6 +112,7 @@ public:
     }
 };
 
+// Aggregator
 class BookCollection
 {
 public:
